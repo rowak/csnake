@@ -88,6 +88,9 @@ void draw_gameover(int score)
 {
     clear();
     mvprintw(GRID_HEIGHT/2-2, GRID_WIDTH/2-4, "GAME OVER");
+    // x position of score, adjusted based on width of text
+    int score_x = (GRID_WIDTH/2)-(num_digits(score)/2)-3;
+    mvprintw(GRID_HEIGHT/2-1, score_x, "score: %d", score);
 }
 
 int num_digits(int x)
