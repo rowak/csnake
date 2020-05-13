@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     nodelay(stdscr, TRUE);
 
     int c;
-    while ((c = getch()) != 'q')
+    while ((c = getch()) != EXIT_KEY)
     {
         if (playing)
         {
@@ -40,8 +40,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            clear();
-            mvprintw(GRID_HEIGHT/2-2, GRID_WIDTH/2-4, "GAME OVER");
+            draw_gameover(snake_size(snake)-1);
             refresh();
         }
         sleep_timer(dir);
@@ -55,13 +54,17 @@ int main(int argc, char *argv[])
 int update(Snake *snake, Direction dir, Point **food)
 {
     clear();
-    update_snake(snake, dir, *(*food));
-    if (check_collision(snake, food))
+    update_snake(snake, dir, **food);
+    if (check_snake_wall_collision(snake) ||
+        check_snake_snake_collision(snake))
     {
-        mvprintw(0, 0, "GAME OVER");
         return 0;
     }
-    draw_food(*(*food));
+    if (check_snake_food_collision(snake, **food))
+    {
+        reset_food(snake, food);
+    }
+    draw_food(**food);
     draw_snake(snake);
     refresh();
     return 1;
@@ -79,6 +82,27 @@ void draw_snake(Snake *snake)
 void draw_food(Point food)
 {
     mvprintw(food.y, food.x, "@");
+}
+
+void draw_gameover(int score)
+{
+    clear();
+    mvprintw(GRID_HEIGHT/2-2, GRID_WIDTH/2-4, "GAME OVER");
+}
+
+int num_digits(int x)
+{
+    if (x == 0)
+    {
+        return 1;
+    }
+    int digits = 0;
+    while (x > 0)
+    {
+        x /= 10;
+        digits++;
+    }
+    return digits;
 }
 
 Direction get_dir(int dir)
@@ -119,34 +143,47 @@ Point *get_random_food()
     return food;
 }
 
-int check_collision(Snake *snake, Point **food)
+void reset_food(Snake *snake, Point **food)
 {
     Point *head = get_head(snake);
-    // Snake-food collision
-    if (head->x == (*food)->x && head->y == (*food)->y)
+    Point *part = malloc(sizeof(Point));
+    part->x = head->x;
+    part->y = head->y;
+    add_part(snake, part);
+    free(*food);
+    *food = get_random_food();
+}
+
+int check_snake_food_collision(Snake *snake, Point food)
+{
+    Point *head = get_head(snake);
+    if (head->x == food.x && head->y == food.y)
     {
-        Point *part = malloc(sizeof(Point));
-        part->x = head->x;
-        part->y = head->y;
-        add_part(snake, part);
-        *food = get_random_food();
+        return TRUE;
     }
-    // Snake-wall collision
-    else if (head->x < 0 || head->x > GRID_WIDTH-1 ||
+    return FALSE;
+}
+
+int check_snake_wall_collision(Snake *snake)
+{
+    Point *head = get_head(snake);
+    if (head->x < 0 || head->x > GRID_WIDTH-1 ||
         head->y < 0 || head->y > GRID_HEIGHT-1)
     {
         return TRUE;
     }
-    // Snake-snake collision
-    else
+    return FALSE;
+}
+
+int check_snake_snake_collision(Snake *snake)
+{
+    Point *head = get_head(snake);
+    for (int i = 1; i < snake_size(snake); i++)
     {
-        for (int i = 1; i < snake_size(snake); i++)
+        Point *part = get_part(snake, i);
+        if (head->x == part->x && head->y == part->y)
         {
-            Point *part = get_part(snake, i);
-            if (head->x == part->x && head->y == part->y)
-            {
-                return TRUE;
-            }
+            return TRUE;
         }
     }
     return FALSE;

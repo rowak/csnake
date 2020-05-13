@@ -18,7 +18,7 @@ typedef struct snake
     List *body;
 } Snake;
 
-Snake *create_snake(Point origin);
+Snake *create_snake(Point);
 int snake_size(Snake *);
 Point *get_head(Snake *);
 Point *get_part(Snake *, int);

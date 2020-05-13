@@ -57,13 +57,6 @@ void update_snake(Snake *snake, Direction dir, Point food)
     Point *head = get_head(snake);
     head->x += dir.point.x;
     head->y += dir.point.y;
-    // if (head->x == food.x && head->y == food.y)
-    // {
-    //     Point *part = malloc(sizeof(Point));
-    //     part->x = head->x;
-    //     part->y = head->y;
-    //     add_part(snake, part);
-    // }
 }
 
 void destroy_snake(Snake *snake)
