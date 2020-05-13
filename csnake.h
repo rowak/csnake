@@ -1,9 +1,15 @@
+#include <ncurses.h>
 #include "list_adt.h"
 #include "snake.h"
 
 #define GRID_WIDTH 80
 #define GRID_HEIGHT 24
 #define BAD_DIR 8
+
+#define DIR_UP KEY_UP
+#define DIR_DOWN KEY_DOWN
+#define DIR_LEFT KEY_LEFT
+#define DIR_RIGHT KEY_RIGHT
 
 #define EXIT_KEY 'q'
 

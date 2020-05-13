@@ -1,13 +1,14 @@
 #include <stdio.h>
-#include <ncurses.h>
 #include <unistd.h>
 #include <time.h>
 #include "csnake.h"
 
-#define DIR_UP KEY_UP
-#define DIR_DOWN KEY_DOWN
-#define DIR_LEFT KEY_LEFT
-#define DIR_RIGHT KEY_RIGHT
+/* Program Name: csnake.c
+ * Author: Ethan Rowan
+ * Created: 12/05/20
+ * Modified: 13/05/20
+ * Compilation: make csnake
+ * Execution: ./csnake */
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +17,8 @@ int main(int argc, char *argv[])
     Point *food = get_random_food();
     Direction dir = get_dir(DIR_RIGHT);
     int playing = TRUE;
+
+    // Initialize curses in "game mode"
     initscr();
     keypad(stdscr, TRUE);
     curs_set(FALSE);
