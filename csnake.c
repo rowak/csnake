@@ -3,12 +3,14 @@
 #include <time.h>
 #include "csnake.h"
 
-/* Program Name: csnake.c
+/*
+ * Program Name: csnake.c
  * Author: Ethan Rowan
  * Created: 12/05/20
  * Modified: 13/05/20
  * Compilation: make csnake
- * Execution: ./csnake */
+ * Execution: ./csnake
+ */
 
 int main(int argc, char *argv[])
 {
